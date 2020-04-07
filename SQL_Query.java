@@ -11,8 +11,7 @@ public class SQL_Query {
         private static Connection connection;
         private static Statement statement;
         private static PreparedStatement pstmt;
-        public static Scanner sc = new Scanner(System.in);
-
+        static Scanner sc = new Scanner(System.in);
 
         synchronized static void connect() {
             try {
@@ -23,7 +22,6 @@ public class SQL_Query {
                 throw new RuntimeException(e);
             }
         }
-
         synchronized static void disconnect() {
             try {
                 connection.close();
@@ -31,11 +29,10 @@ public class SQL_Query {
                 throw new RuntimeException(e);
             }
         }
-
         public static void createTable(){
             try {
                 Statement stmt = connection.createStatement();
-                boolean rs = stmt.execute("CREATE TABLE IF NOT EXISTS Students" +
+                stmt.execute("CREATE TABLE IF NOT EXISTS Students" +
                         "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                         "  Name TEXT NOT NULL," +
                         "  Score INTEGER NOT NULL);");
@@ -45,24 +42,49 @@ public class SQL_Query {
         }
         public static void update(String columnName, int param){
             try {
-                Statement create = connection.createStatement();
+                connection.createStatement();
                 pstmt = connection.prepareStatement("UPDATE Students SET Score = ? WHERE Name = ?;");
                 pstmt.setInt(1, param);
                 pstmt.setString(2, columnName);
-                ResultSet rs = pstmt.executeQuery();
+                pstmt.executeUpdate();
 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-    public static void insert(int id, String name, int score){
+    public static void insert(String name, int score){
         try {
-            Statement create = connection.createStatement();
-            pstmt = connection.prepareStatement("INSERT INTO Students (ID, Name, Score) VALUES (?, ?, ?);");
+            connection.createStatement();
+            pstmt = connection.prepareStatement("INSERT INTO Students (Name, Score) VALUES (?, ?);");
+            pstmt.setString(1, name);
+            pstmt.setInt(2, score);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void delete(int id){
+        try {
+            connection.createStatement();
+            pstmt = connection.prepareStatement("DELETE FROM Students WHERE ID=?;");
             pstmt.setInt(1, id);
-            pstmt.setString(2, name);
-            pstmt.setInt(3, id);
-            pstmt.execute();
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void select(){
+        try {
+            System.out.print("Введите запрос: ");
+            String sqlQuery = sc.nextLine();
+            connection.createStatement();
+            pstmt = connection.prepareStatement(sqlQuery);
+                       ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                String name = rs.getString("Name");
+                int score = rs.getInt("Score");
+                System.out.println(name + " " + score);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -70,13 +92,14 @@ public class SQL_Query {
 
 
 
-
     public static void main(String[] args) {
         connect();
 
-        createTable();
-        insert(1,"Bob",30);
-
+        //createTable();
+        //insert("Bob2",30);
+        //update("Bob", 20);
+        //delete(3);
+        select();
         disconnect();
     }
     }
