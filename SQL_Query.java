@@ -1,7 +1,5 @@
 package ru.gb.java_3.hw_2;
-import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 /*
 1. Сделать методы для работы с БД (CREATE, UPDATE, DELETE, INSERT, SELECT)
@@ -90,11 +88,8 @@ public class SQL_Query {
         }
     }
 
-
-
     public static void main(String[] args) {
         connect();
-
         //createTable();
         //insert("Bob2",30);
         //update("Bob", 20);
